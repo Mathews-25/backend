@@ -4,6 +4,15 @@
 
 Buckets representing fewer than ten wallets are suppressed. Time windows are coarse and fixed to reduce differencing risk. Responses include an ETag and `Cache-Control: public, max-age=300, stale-while-revalidate=60`; breaking field changes require a new API version.
 
+## Pagination
+
+List endpoints accept `limit` and `offset` query parameters. Both must be integers within the following ranges:
+
+- `limit` — `1` to `100` (inclusive). Defaults to `20` when omitted.
+- `offset` — `0` to `1000000` (inclusive). Defaults to `0` when omitted.
+
+Non-integer values (e.g. `?limit=abc`), negative values (e.g. `?limit=-1`), and values outside the ranges above (e.g. `?offset=99999999999999999999`) are rejected with `400 Bad Request` using the standard error envelope and the `invalid_pagination` error code. See `docs/error-codes.json` for the full catalogue.
+
 ## Health and readiness
 
 The service exposes two distinct operational endpoints. They answer different questions and are wired to different Kubernetes probes.
